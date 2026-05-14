@@ -3,7 +3,7 @@ import yt_dlp
 import threading
 from tkinter import filedialog
 
-# Genel Tema Ayarları
+# General theme settings
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
 
@@ -14,36 +14,36 @@ class SosyalMedyaIndirici(ctk.CTk):
         self.title("Universal Video Downloader")
         self.geometry("550x450")
         
-        # Seçilen klasör yolunu tutacak değişken
+        # holding the chosen destination
         self.indirilecek_yer = ""
 
-        # --- Arayüz Elemanları ---
+        # --- GUI ---
         
-        # Başlık
+        # Label
         self.label = ctk.CTkLabel(self, text="Video Downloader", font=("Roboto", 24, "bold"))
         self.label.pack(pady=20)
 
-        # Link Giriş Kutusu
+        # Link Panel
         self.entry = ctk.CTkEntry(self, width=450, placeholder_text="YouTube, Instagram, TikTok veya X linkini yapıştırın...")
         self.entry.pack(pady=10)
 
-        # Klasör Seçme Butonu ve Etiketi
+        # Choosing the file
         self.sec_btn = ctk.CTkButton(self, text="Kaydedilecek Klasörü Seç", command=self.klasor_sec, fg_color="#4a4a4a", hover_color="#333333")
         self.sec_btn.pack(pady=5)
 
         self.yol_etiketi = ctk.CTkLabel(self, text="Henüz klasör seçilmedi", font=("Arial", 11), text_color="gray")
         self.yol_etiketi.pack(pady=5)
 
-        # İlerleme Çubuğu
+        # loading bar
         self.progress_bar = ctk.CTkProgressBar(self, width=450)
         self.progress_bar.set(0)
         self.progress_bar.pack(pady=25)
 
-        # İndirme Butonu
+        # download button
         self.indir_btn = ctk.CTkButton(self, text="İndirmeyi Başlat", command=self.thread_baslat, font=("Roboto", 16, "bold"), height=40)
         self.indir_btn.pack(pady=10)
 
-        # Durum Mesajı
+        # state message
         self.status_label = ctk.CTkLabel(self, text="Hazır", text_color="white")
         self.status_label.pack(pady=10)
 
@@ -56,7 +56,7 @@ class SosyalMedyaIndirici(ctk.CTk):
 
     def progress_hook(self, d):
         if d['status'] == 'downloading':
-            # Yüzde hesaplama
+            
             p = d.get('_percent_str', '0%').replace('%','')
             try:
                 progress_float = float(p) / 100
@@ -70,7 +70,7 @@ class SosyalMedyaIndirici(ctk.CTk):
             self.status_label.configure(text="İndirme Başarıyla Tamamlandı!", text_color="#2ecc71")
 
     def thread_baslat(self):
-        # Arayüzün donmaması için indirmeyi ayrı bir kanalda başlatıyoruz
+        # Running the task in a background thread
         t = threading.Thread(target=self.indir)
         t.start()
 
@@ -88,7 +88,7 @@ class SosyalMedyaIndirici(ctk.CTk):
         self.status_label.configure(text="Bilgiler alınıyor...", text_color="white")
         
         ydl_opts = {
-            'format': 'best', # Hem ses hem video olan en iyi tek dosyayı seçer
+            'format': 'best', 
             'outtmpl': f'{self.indirilecek_yer}/%(title)s.%(ext)s',
             'progress_hooks': [self.progress_hook],
         }
